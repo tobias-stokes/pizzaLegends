@@ -42,21 +42,59 @@ class Overworld {
         step();
     }
 
-    init() {
-        this.map = new OverworldMap(window.OverworldMaps.DemoRoom);
+    bindActionInput() {
+        new KeyPressListener('Enter', () => {
+            // Is there a person here to talk to?
+                this.map.checkForActionCutScene();
+        });
+    }
+
+    bindHeroPositionCheck() {
+        document.addEventListener('PersonWalkingComplete', e => {
+            if (e.detail.whoId == 'hero') {
+                // Hero position has changed
+                    this.map.checkForFootstepCutScene();
+            }
+        });
+    }
+
+    startMap(mapConfig) {
+        this.map = new OverworldMap(mapConfig);
+        this.map.overworld = this;
         this.map.mountObjects();
+    }
+
+    init() {
+        this.startMap(window.OverworldMaps.DemoRoom);
+
+        this.bindActionInput();
+        this.bindHeroPositionCheck();
 
         this.directionInput = new DirectionInput();
         this.directionInput.init();
 
         this.startGameLoop();
 
-        this.map.startCutScene([
-            { who: 'hero', type: 'walk', direction: 'down' },
-            { who: 'hero', type: 'walk', direction: 'down' },
-            { who: 'npcA', type: 'walk', direction: 'left' },
-            { who: 'npcA', type: 'walk', direction: 'left' },
-            { who: 'npcA', type: 'stand', direction: 'up', time: 800 }
-        ]);
+        // this.map.startCutScene([
+        //     { who: 'hero', type: 'walk', direction: 'down' },
+        //     { who: 'hero', type: 'walk', direction: 'down' },
+        //     { who: 'hero', type: 'walk', direction: 'right' },
+        //     { type: 'textMessage', text: 'WHY HELLO THERE' }
+        //     // { who: 'npcA', type: 'walk', direction: 'left' },
+        //     // { who: 'npcA', type: 'walk', direction: 'up' },
+        //     // { who: 'npcA', type: 'walk', direction: 'up' },
+        //     // { who: 'npcA', type: 'walk', direction: 'up' },
+        //     // { who: 'npcA', type: 'walk', direction: 'right' },
+        //     // { who: 'npcA', type: 'walk', direction: 'right' },
+        //     // { who: 'npcA', type: 'walk', direction: 'right' },
+        //     // { who: 'npcA', type: 'walk', direction: 'down' },
+        //     // { who: 'npcA', type: 'walk', direction: 'down' },
+        //     // { who: 'npcA', type: 'walk', direction: 'down' },
+        //     // { who: 'npcA', type: 'walk', direction: 'left' },
+        //     // { who: 'npcA', type: 'walk', direction: 'left' },
+        //     // { who: 'npcA', type: 'walk', direction: 'left' },
+        //     // { who: 'npcA', type: 'walk', direction: 'left' },
+        //     // { who: 'npcA', type: 'walk', direction: 'up' },
+        // ]);
     }
 }
