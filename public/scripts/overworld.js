@@ -11,19 +11,26 @@ class Overworld {
 
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
+        // Establish camera person
+            const cameraPerson = this.map.gameObjects.hero;
+
+        // Update all updates
+            Object.values(this.map.gameObjects).forEach(object => {
+                object.update({
+                    arrow: this.directionInput.direction
+                });
+            });
+
             // Draw lower layer
-                this.map.drawLowerImage(this.ctx);
+                this.map.drawLowerImage(this.ctx, cameraPerson);
 
             // Draw game objects
                 Object.values(this.map.gameObjects).forEach(object => {
-                    object.update({
-                        arrow: this.directionInput.direction
-                    });
-                    object.sprite.draw(this.ctx);
+                    object.sprite.draw(this.ctx, cameraPerson);
                 });
 
             // Draw upper layer
-                this.map.drawUpperImage(this.ctx);
+                this.map.drawUpperImage(this.ctx, cameraPerson);
 
             requestAnimationFrame(() => {
                 step();
